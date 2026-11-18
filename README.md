@@ -6,7 +6,25 @@ A small fictional service assistant that answers known questions about checking 
 **Developer:** Aroob Alosaili
 **Project type:** Individual cumulative course project (four days, one notebook)
 
-[![Open the notebook in Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Aroob-Abdullah/Murshid_Aroob1/blob/main/notebooks/murshid.ipynb)
+[![Open the notebook in Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Aroob-Abdullah/Murshid_Aroob/blob/main/notebooks/murshid.ipynb)
+
+## Problem and intended users
+
+People who apply for a government service often ask the same simple questions, such as how to follow their application, and they should never see another person's application. Murshid is a training prototype of an assistant that answers those known questions, looks up an application status only for its owner, and refuses everything else safely.
+
+- **Intended users:** learners and instructors of LLM application engineering who want to see validation, authorization, testing and caching around a model-shaped interface. Inside the story, the user is a fictional applicant (`demo-user-1`).
+- **Not intended for:** real applicants, real service data or production use.
+
+## Scope: what it does and does not do
+
+| Murshid does | Murshid does not |
+|---|---|
+| Answer two public FAQ questions (Arabic and English) and ask for clarification otherwise | Use or train a real language model in the core project |
+| Turn a question into a validated four-field ticket | Understand free language; it uses keywords and a regular expression |
+| Read an application status through a read-only tool, after an ownership check | Change, cancel or create any application |
+| Reject blank, over-long, instruction-override and 10-digit inputs | Provide complete protection against prompt injection or personal-data leakage |
+| Test itself with ten fixed golden cases | Measure live model quality or general safety |
+| Cache the two public answers and report call counts | Promise a real speed-up or a real cost saving |
 
 ## Project overview
 
@@ -140,13 +158,19 @@ The full report (mode, dataset, golden tests, cache experiment, hypothetical cos
 
 ## Homework
 
-Each extension homework lives in its own notebook in [`homeworks/`](homeworks/); none of them changes the core notebook. The Day 1 and Day 2 homework were first published as standalone repositories ([Mrshid_HW1_Aroob](https://github.com/Aroob-Abdullah/Mrshid_HW1_Aroob) and [Mrshid_HW2_Aroob](https://github.com/Aroob-Abdullah/Mrshid_HW2_Aroob)); this repository contains the final notebooks and results, so it is complete on its own.
+Each extension homework lives in its own notebook in [`homeworks/`](homeworks/); none of them changes the core notebook. This repository contains all four final homework notebooks and their results, so it is complete on its own.
+
+| Homework | Kind of execution |
+|---|---|
+| Day 1 and Day 4 | **Actual local model inference** (`mode=real_local_model`): FLAN-T5 small runs on a Colab CPU |
+| Day 2 | Simulated tool calling (`mode=simulated_tool_protocol`), standard library only |
+| Day 3 | Standalone validation exercise, standard library only |
 
 ### Day 1: a real local model
 
 [`homeworks/day1_real_model.ipynb`](homeworks/day1_real_model.ipynb) · result: [`results/homeworks/day1/live_demo_result.json`](results/homeworks/day1/live_demo_result.json)
 
-A real model, `google/flan-t5-small` (pinned revision), generates an answer from a synthetic FAQ context on CPU, with no external inference API.
+A real model, `google/flan-t5-small` (pinned revision), generates an answer from a synthetic FAQ context on CPU, with no external inference API. This is actual local model inference, unlike the mock core project.
 
 | Metric | Result |
 |---|---:|
@@ -154,6 +178,8 @@ A real model, `google/flan-t5-small` (pinned revision), generates an answer from
 | Output tokens (including special tokens) | 6 |
 | Inference time | 0.353 s |
 | External inference API calls | 0 |
+
+**Input → tokens → model → answer.** The context and question were combined into one prompt, which the tokenizer split into 34 input tokens; the model then generated 6 output tokens one at a time on the CPU, and those tokens were decoded back into text. Unlike `FakeClient`, which looks up a sentence written in advance, this answer did not exist before the run, so it can change with the wording or settings and must be checked.
 
 The answer was **Use its reference number**. I reviewed it: it tells the user to use the reference number and does not invent fees, dates or a status. A successful run is not proof of a correct answer, and one English example with a very small model says nothing about Arabic or real-service quality. Setup change: `sentencepiece==0.2.0` has no build for Colab's Python 3.13, so I used `0.2.1`.
 
@@ -173,7 +199,7 @@ A dispatcher that treats a structured tool call as untrusted input: it checks th
 | 6 | Numeric reference instead of text | Argument validation | `invalid_arguments` |
 | 7 | Text instead of a call object | Call-shape check | `invalid_call` |
 
-All seven cases match the expected result (7 / 7) and the records are unchanged afterwards. Cases 2 to 7 are correct refusals, not errors. Validation asks whether a call is well formed; authorization asks whether this user may see this record, so a valid call can still be refused. This is simulated tool calling: the calls are hand-written and no model chooses the tool.
+All seven cases match the expected result (7 / 7) and the records are unchanged afterwards. Cases 2 to 7 are correct refusals, not errors. Validation asks whether a call is well formed; authorization asks whether this user may see this record, so a valid call can still be refused. This is simulated tool calling: the calls are hand-written and no model chooses the tool, so it is not native function calling by a model provider. The trusted user is a synthetic fixture supplied by the application, not real authentication.
 
 ### Day 3: deliberate errors and a corrected input
 
@@ -194,7 +220,7 @@ A caught rejection is a **successful** test here: the validator is correct when 
 
 [`homeworks/day4_evaluation.ipynb`](homeworks/day4_evaluation.ipynb) · result: [`results/homeworks/day4/evaluation_result.json`](results/homeworks/day4/evaluation_result.json)
 
-The same small model as Day 1, `google/flan-t5-small` (pinned revision), answers three rewordings of one synthetic FAQ question from a one-sentence context: *"You can check your application status using its reference number."* Greedy decoding (`do_sample=False`, `num_beams=1`, `max_new_tokens=48`) on a Colab CPU (Python 3.13, torch 2.14.1, `transformers==4.49.0`, `sentencepiece==0.2.1`). External inference API calls: 0; billed API cost: 0.
+Actual local model inference: the same small model as Day 1, `google/flan-t5-small` (pinned revision), answers three rewordings of one synthetic FAQ question from a one-sentence context: *"You can check your application status using its reference number."* Greedy decoding (`do_sample=False`, `num_beams=1`, `max_new_tokens=48`) on a Colab CPU (Python 3.13, torch 2.14.1, `transformers==4.49.0`, `sentencepiece==0.2.1`). External inference API calls: 0; billed API cost: 0.
 
 | Case | Question | Answer | Keyword check | Input tokens | Output tokens | Time | My review |
 |---|---|---|:---:|---:|---:|---:|---|
@@ -248,7 +274,7 @@ Output tokens include special tokens. I read each answer against the context: al
 ## Repository structure
 
 ```text
-Murshid_Aroob1/
+Murshid_Aroob/
 ├── README.md
 ├── notebooks/
 │   └── murshid.ipynb                  # the cumulative core project, Days 1-4
@@ -283,6 +309,7 @@ Murshid_Aroob1/
 4. Expected output: `"checks": "passed"` for Day 1, Day 2 and Day 4; a Day 3 report with `"passed": 10`, `"total": 10` and `"pass_rate": 100.0`; and for Day 4 a cache comparison of 3 mock calls without the cache and 1 with it, hits `[false, true, true]`, hit rate 66.7 and 0 external API calls.
 5. The results are saved to `murshid_outputs/` as `baseline_results.json`, `day2_results.json`, `day3_results.json`, `day4_results.json`, `final_report.json`, `metrics.json` and `synthetic_data.json`. The last cell packages them in `murshid_submission.zip`; the notebook itself is saved separately.
 6. To check reproducibility, choose **Runtime → Restart session and run all** and confirm that the execution counts run from 1 to 14 with no error.
+7. To experiment, choose **File → Save a copy in Drive** first, so the notebook in this repository stays unchanged.
 
 No package installation, API key, GPU, model download or paid service is required for the core project: it uses Python's standard library only. Each homework notebook runs on its own (open it from the `homeworks/` folder in Colab); the Day 1 and Day 4 notebooks download a small model and need an internet connection.
 
@@ -313,10 +340,10 @@ No package installation, API key, GPU, model download or paid service is require
 
 ## Progress
 
-- [x] Day 1: synthetic directory, mock client, `ask`, response contract
-- [x] Day 2: validated ticket, read-only status lookup, ownership check
-- [x] Day 3: guards, pipeline, ten golden cases
-- [x] Day 4: cache, measurements, regression, final report
+- [x] Day 1 (cells 1–3): synthetic directory, mock client, `ask`, response contract
+- [x] Day 2 (cells 4–6): validated ticket, read-only status lookup, ownership check
+- [x] Day 3 (cells 7–10): guards, pipeline, ten golden cases, documented change
+- [x] Day 4 (cells 11–14): cache, measurements, regression, final report
 - [x] Homework for Days 1 to 4 (this repository)
 
 ## Documentation
@@ -325,6 +352,6 @@ Technical notes (architecture, data fields, validation, the read-only tool and a
 
 ## Training-program attribution
 
-This project was completed for the **LLM Application Engineering (SDA-AIE-213)** course, delivered by **SDAIA Academy** as a four-day program, instructor **Meaad Al-Marri**. Session: **November 2026**.
+This project was completed for **LLM Application Engineering — SDA-AIE-213**, a four-day program delivered within the **SDAIA Academy** training context, instructor **Meaad Al-Marri**. Session: **November 2026**.
 
 Training-program reference: [SDAIA Academy on GitHub](https://github.com/SDAIAAcademy). This is my own learning project; it is not endorsed or certified by SDAIA.
