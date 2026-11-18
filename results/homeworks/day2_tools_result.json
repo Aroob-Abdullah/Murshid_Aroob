@@ -1,0 +1,65 @@
+{
+  "mode": "simulated_tool_protocol",
+  "passed": 7,
+  "total": 7,
+  "records_unchanged": true,
+  "cases": [
+    {
+      "case": 1,
+      "label": "Owned reference",
+      "result": {
+        "code": "ok",
+        "status": "under_review"
+      },
+      "passed": true
+    },
+    {
+      "case": 2,
+      "label": "Another user's reference",
+      "result": {
+        "code": "unavailable"
+      },
+      "passed": true
+    },
+    {
+      "case": 3,
+      "label": "Absent reference",
+      "result": {
+        "code": "unavailable"
+      },
+      "passed": true
+    },
+    {
+      "case": 4,
+      "label": "Disallowed tool",
+      "result": {
+        "code": "tool_not_allowed"
+      },
+      "passed": true
+    },
+    {
+      "case": 5,
+      "label": "Unexpected owner argument",
+      "result": {
+        "code": "invalid_arguments"
+      },
+      "passed": true
+    },
+    {
+      "case": 6,
+      "label": "Numeric reference",
+      "result": {
+        "code": "invalid_arguments"
+      },
+      "passed": true
+    },
+    {
+      "case": 7,
+      "label": "Not a call object",
+      "result": {
+        "code": "invalid_call"
+      },
+      "passed": true
+    }
+  ]
+}
