@@ -144,7 +144,7 @@ Each extension homework lives in its own notebook in [`homeworks/`](homeworks/);
 
 ### Day 1: a real local model
 
-[`homeworks/day1_real_model.ipynb`](homeworks/day1_real_model.ipynb) · result: [`results/homeworks/live_demo_result.json`](results/homeworks/live_demo_result.json)
+[`homeworks/day1_real_model.ipynb`](homeworks/day1_real_model.ipynb) · result: [`results/homeworks/day1/live_demo_result.json`](results/homeworks/day1/live_demo_result.json)
 
 A real model, `google/flan-t5-small` (pinned revision), generates an answer from a synthetic FAQ context on CPU, with no external inference API.
 
@@ -159,7 +159,7 @@ The answer was **Use its reference number**. I reviewed it: it tells the user to
 
 ### Day 2: a validated tool-call dispatcher
 
-[`homeworks/day2_tools.ipynb`](homeworks/day2_tools.ipynb) · result: [`results/homeworks/day2_tools_result.json`](results/homeworks/day2_tools_result.json)
+[`homeworks/day2_tools.ipynb`](homeworks/day2_tools.ipynb) · result: [`results/homeworks/day2/tools_result.json`](results/homeworks/day2/tools_result.json)
 
 A dispatcher that treats a structured tool call as untrusted input: it checks the call's shape, an explicit allowlist, the arguments, and then ownership of the record, using a read-only tool. Built by hand in five cells with the standard library only.
 
@@ -177,7 +177,7 @@ All seven cases match the expected result (7 / 7) and the records are unchanged 
 
 ### Day 3: deliberate errors and a corrected input
 
-[`homeworks/day3_errors.ipynb`](homeworks/day3_errors.ipynb) · result: [`results/homeworks/day3_errors_result.json`](results/homeworks/day3_errors_result.json)
+[`homeworks/day3_errors.ipynb`](homeworks/day3_errors.ipynb) · result: [`results/homeworks/day3/errors_result.json`](results/homeworks/day3/errors_result.json)
 
 A separate notebook that practises validation errors. It is a standalone exercise and does not change any function in `murshid.ipynb`. `validate_public_question` rejects three invalid inputs on purpose; each rejection is caught with `try` and `except ValueError`, and the exact message is checked with `assert`.
 
@@ -188,19 +188,19 @@ A separate notebook that practises validation errors. It is a standalone exercis
 | 501 characters | `ValueError` | `Use at most 500 characters.` | ✅ |
 | `' How can I check my application status? '` (corrected) | none | accepted and trimmed | ✅ |
 
-A caught rejection is a **successful** test here: the validator is correct when it refuses invalid input with the expected message, and the exercise would fail if any of the three were accepted. The report printed by the last code cell is saved as [`results/homeworks/day3_errors_result.json`](results/homeworks/day3_errors_result.json) and matches the course's expected output.
+A caught rejection is a **successful** test here: the validator is correct when it refuses invalid input with the expected message, and the exercise would fail if any of the three were accepted. The report printed by the last code cell is saved as [`results/homeworks/day3/errors_result.json`](results/homeworks/day3/errors_result.json) and matches the course's expected output.
 
 ### Day 4: evaluating three real-model answers
 
-[`homeworks/day4_evaluation.ipynb`](homeworks/day4_evaluation.ipynb) · result: [`results/homeworks/evaluation_result.json`](results/homeworks/evaluation_result.json)
+[`homeworks/day4_evaluation.ipynb`](homeworks/day4_evaluation.ipynb) · result: [`results/homeworks/day4/evaluation_result.json`](results/homeworks/day4/evaluation_result.json)
 
 The same small model as Day 1, `google/flan-t5-small` (pinned revision), answers three rewordings of one synthetic FAQ question from a one-sentence context: *"You can check your application status using its reference number."* Greedy decoding (`do_sample=False`, `num_beams=1`, `max_new_tokens=48`) on a Colab CPU (Python 3.13, torch 2.14.1, `transformers==4.49.0`, `sentencepiece==0.2.1`). External inference API calls: 0; billed API cost: 0.
 
 | Case | Question | Answer | Keyword check | Input tokens | Output tokens | Time | My review |
 |---|---|---|:---:|---:|---:|---:|---|
-| E01 | How can I check my application status? | Use its reference number | hit | 34 | 6 | 0.401 s | Correct and supported |
-| E02 | What do I need to check my application status? | Reference number | hit | 36 | 4 | 0.152 s | Correct and supported |
-| E03 | How can I find out the status of my application? | Use its reference number | hit | 37 | 6 | 0.194 s | Correct and supported |
+| E01 | How can I check my application status? | Use its reference number | hit | 34 | 6 | 0.252 s | Correct and supported |
+| E02 | What do I need to check my application status? | Reference number | hit | 36 | 4 | 0.1 s | Correct and supported |
+| E03 | How can I find out the status of my application? | Use its reference number | hit | 37 | 6 | 0.162 s | Correct and supported |
 
 Output tokens include special tokens. I read each answer against the context: all three convey that the status is checked with the reference number, none invents a fee, date, status or contact detail, and I found no failures in this run.
 
@@ -269,10 +269,10 @@ Murshid_Aroob1/
     │   ├── metrics.json
     │   └── synthetic_data.json
     └── homeworks/
-        ├── live_demo_result.json      # Day 1 homework
-        ├── day2_tools_result.json     # Day 2 homework
-        ├── day3_errors_result.json    # Day 3 homework
-        └── evaluation_result.json     # Day 4 homework
+        ├── day1/live_demo_result.json    # Day 1 homework
+        ├── day2/tools_result.json        # Day 2 homework
+        ├── day3/errors_result.json       # Day 3 homework
+        └── day4/evaluation_result.json   # Day 4 homework
 ```
 
 ## Quick start
