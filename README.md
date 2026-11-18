@@ -1,12 +1,12 @@
 # Murshid — Service Assistant
-### Course project · SDAIA Academy · LLM Application Engineering (SDA-AIE-213)
+### Course project · **SDAIA Academy** ([@SDAIAAcademy](https://github.com/SDAIAAcademy)) · LLM Application Engineering (SDA-AIE-213)
 
 A small fictional service assistant that answers known questions about checking an application status, in Arabic and English, built around a deterministic mock client to practise the engineering of an LLM application.
 
 **Developer:** Aroob Alosaili
 **Project type:** Individual cumulative course project (four days, one notebook)
 
-[![Open the notebook in Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Aroob-Abdullah/Murshid_Aroob/blob/main/notebooks/murshid.ipynb)
+[![Open the notebook in Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Aroob-Abdullah/Murshid_Aroob1/blob/main/notebooks/murshid.ipynb)
 
 ## Project overview
 
@@ -40,7 +40,7 @@ Murshid is bilingual. Arabic inputs and answers are shown exactly as tested, wit
 | `trace_id` is nonempty and `latency_ms` is not negative | ✅ Passed |
 | Empty input is rejected **before** any client call | ✅ Passed |
 
-Measured `latency_ms` in my run: 0.0583, 0.0215 and 0.016 ms. These values time Python code, not model inference, and change on every run; trace IDs are random UUIDs. Neither is compared with the reference.
+Measured `latency_ms` in my run: 0.063, 0.0174 and 0.0105 ms. These values time Python code, not model inference, and change on every run; trace IDs are random UUIDs. Neither is compared with the reference.
 
 ### Day 2: routing and the read-only status tool
 
@@ -140,11 +140,11 @@ The full report (mode, dataset, golden tests, cache experiment, hypothetical cos
 
 ## Homework
 
-Each extension homework lives in its own notebook in [`homework/`](homework/); none of them changes the core notebook. The Day 1 and Day 2 homework were first published as standalone repositories ([Mrshid_HW1_Aroob](https://github.com/Aroob-Abdullah/Mrshid_HW1_Aroob) and [Mrshid_HW2_Aroob](https://github.com/Aroob-Abdullah/Mrshid_HW2_Aroob)); the notebooks here are identical copies, so this repository is complete on its own.
+Each extension homework lives in its own notebook in [`homeworks/`](homeworks/); none of them changes the core notebook. The Day 1 and Day 2 homework were first published as standalone repositories ([Mrshid_HW1_Aroob](https://github.com/Aroob-Abdullah/Mrshid_HW1_Aroob) and [Mrshid_HW2_Aroob](https://github.com/Aroob-Abdullah/Mrshid_HW2_Aroob)); this repository contains the final notebooks and results, so it is complete on its own.
 
 ### Day 1: a real local model
 
-[`homework/day1_real_model.ipynb`](homework/day1_real_model.ipynb) · result: [`results/day1/live_demo_result.json`](results/day1/live_demo_result.json)
+[`homeworks/day1_real_model.ipynb`](homeworks/day1_real_model.ipynb) · result: [`results/homeworks/live_demo_result.json`](results/homeworks/live_demo_result.json)
 
 A real model, `google/flan-t5-small` (pinned revision), generates an answer from a synthetic FAQ context on CPU, with no external inference API.
 
@@ -152,14 +152,14 @@ A real model, `google/flan-t5-small` (pinned revision), generates an answer from
 |---|---:|
 | Input tokens | 34 |
 | Output tokens (including special tokens) | 6 |
-| Inference time | 0.329 s |
+| Inference time | 0.353 s |
 | External inference API calls | 0 |
 
 The answer was **Use its reference number**. I reviewed it: it tells the user to use the reference number and does not invent fees, dates or a status. A successful run is not proof of a correct answer, and one English example with a very small model says nothing about Arabic or real-service quality. Setup change: `sentencepiece==0.2.0` has no build for Colab's Python 3.13, so I used `0.2.1`.
 
 ### Day 2: a validated tool-call dispatcher
 
-[`homework/day2_tools.ipynb`](homework/day2_tools.ipynb)
+[`homeworks/day2_tools.ipynb`](homeworks/day2_tools.ipynb) · result: [`results/homeworks/day2_tools_result.json`](results/homeworks/day2_tools_result.json)
 
 A dispatcher that treats a structured tool call as untrusted input: it checks the call's shape, an explicit allowlist, the arguments, and then ownership of the record, using a read-only tool. Built by hand in five cells with the standard library only.
 
@@ -177,7 +177,7 @@ All seven cases match the expected result (7 / 7) and the records are unchanged 
 
 ### Day 3: deliberate errors and a corrected input
 
-[`homework/day3_errors.ipynb`](homework/day3_errors.ipynb) · result: [`results/homework/day3_errors_result.json`](results/homework/day3_errors_result.json)
+[`homeworks/day3_errors.ipynb`](homeworks/day3_errors.ipynb) · result: [`results/homeworks/day3_errors_result.json`](results/homeworks/day3_errors_result.json)
 
 A separate notebook that practises validation errors. It is a standalone exercise and does not change any function in `murshid.ipynb`. `validate_public_question` rejects three invalid inputs on purpose; each rejection is caught with `try` and `except ValueError`, and the exact message is checked with `assert`.
 
@@ -188,19 +188,19 @@ A separate notebook that practises validation errors. It is a standalone exercis
 | 501 characters | `ValueError` | `Use at most 500 characters.` | ✅ |
 | `' How can I check my application status? '` (corrected) | none | accepted and trimmed | ✅ |
 
-A caught rejection is a **successful** test here: the validator is correct when it refuses invalid input with the expected message, and the exercise would fail if any of the three were accepted. The report printed by the last code cell is saved as [`results/homework/day3_errors_result.json`](results/homework/day3_errors_result.json) and matches the course's expected output.
+A caught rejection is a **successful** test here: the validator is correct when it refuses invalid input with the expected message, and the exercise would fail if any of the three were accepted. The report printed by the last code cell is saved as [`results/homeworks/day3_errors_result.json`](results/homeworks/day3_errors_result.json) and matches the course's expected output.
 
 ### Day 4: evaluating three real-model answers
 
-[`homework/day4_evaluation.ipynb`](homework/day4_evaluation.ipynb) · result: [`results/day4/evaluation_result.json`](results/day4/evaluation_result.json)
+[`homeworks/day4_evaluation.ipynb`](homeworks/day4_evaluation.ipynb) · result: [`results/homeworks/evaluation_result.json`](results/homeworks/evaluation_result.json)
 
 The same small model as Day 1, `google/flan-t5-small` (pinned revision), answers three rewordings of one synthetic FAQ question from a one-sentence context: *"You can check your application status using its reference number."* Greedy decoding (`do_sample=False`, `num_beams=1`, `max_new_tokens=48`) on a Colab CPU (Python 3.13, torch 2.14.1, `transformers==4.49.0`, `sentencepiece==0.2.1`). External inference API calls: 0; billed API cost: 0.
 
 | Case | Question | Answer | Keyword check | Input tokens | Output tokens | Time | My review |
 |---|---|---|:---:|---:|---:|---:|---|
-| E01 | How can I check my application status? | Use its reference number | hit | 34 | 6 | 0.333 s | Correct and supported |
-| E02 | What do I need to check my application status? | Reference number | hit | 36 | 4 | 0.134 s | Correct and supported |
-| E03 | How can I find out the status of my application? | Use its reference number | hit | 37 | 6 | 0.192 s | Correct and supported |
+| E01 | How can I check my application status? | Use its reference number | hit | 34 | 6 | 0.401 s | Correct and supported |
+| E02 | What do I need to check my application status? | Reference number | hit | 36 | 4 | 0.152 s | Correct and supported |
+| E03 | How can I find out the status of my application? | Use its reference number | hit | 37 | 6 | 0.194 s | Correct and supported |
 
 Output tokens include special tokens. I read each answer against the context: all three convey that the status is checked with the reference number, none invents a fee, date, status or contact detail, and I found no failures in this run.
 
@@ -248,11 +248,11 @@ Output tokens include special tokens. I read each answer against the context: al
 ## Repository structure
 
 ```text
-Murshid_Aroob/
+Murshid_Aroob1/
 ├── README.md
 ├── notebooks/
 │   └── murshid.ipynb                  # the cumulative core project, Days 1-4
-├── homework/
+├── homeworks/
 │   ├── day1_real_model.ipynb
 │   ├── day2_tools.ipynb
 │   ├── day3_errors.ipynb
@@ -268,12 +268,11 @@ Murshid_Aroob/
     │   ├── final_report.json
     │   ├── metrics.json
     │   └── synthetic_data.json
-    ├── day1/
-    │   └── live_demo_result.json
-    ├── day4/
-    │   └── evaluation_result.json
-    └── homework/
-        └── day3_errors_result.json
+    └── homeworks/
+        ├── live_demo_result.json      # Day 1 homework
+        ├── day2_tools_result.json     # Day 2 homework
+        ├── day3_errors_result.json    # Day 3 homework
+        └── evaluation_result.json     # Day 4 homework
 ```
 
 ## Quick start
@@ -285,7 +284,7 @@ Murshid_Aroob/
 5. The results are saved to `murshid_outputs/` as `baseline_results.json`, `day2_results.json`, `day3_results.json`, `day4_results.json`, `final_report.json`, `metrics.json` and `synthetic_data.json`. The last cell packages them in `murshid_submission.zip`; the notebook itself is saved separately.
 6. To check reproducibility, choose **Runtime → Restart session and run all** and confirm that the execution counts run from 1 to 14 with no error.
 
-No package installation, API key, GPU, model download or paid service is required for the core project: it uses Python's standard library only. Each homework notebook runs on its own (open it from the `homework/` folder in Colab); the Day 1 and Day 4 notebooks download a small model and need an internet connection.
+No package installation, API key, GPU, model download or paid service is required for the core project: it uses Python's standard library only. Each homework notebook runs on its own (open it from the `homeworks/` folder in Colab); the Day 1 and Day 4 notebooks download a small model and need an internet connection.
 
 ## Dataset
 
@@ -323,18 +322,6 @@ No package installation, API key, GPU, model download or paid service is require
 ## Documentation
 
 Technical notes (architecture, data fields, validation, the read-only tool and authorization fixture, cache rules, tests, outputs, limitations and future improvement): [`docs/project-notes.md`](docs/project-notes.md).
-
-## Version history
-
-| Stage | Commit message |
-|---|---|
-| Day 1 | Initial uploads of the notebook and `baseline_results.json` |
-| Day 2 | `Day 2: add validated tickets and authorized status lookup` |
-| Day 3 | `Day 3: add guardrails and ten regression cases` |
-| Day 4 | `Day 4: add cache experiment and final report` |
-| Homework | One commit per homework notebook and result file, for example `Add Day 3 extra homework: deliberate validation errors` |
-
-Some earlier commits were made by uploading files from Colab and have generic messages; the stage commits above are the ones that mark each day.
 
 ## Training-program attribution
 
